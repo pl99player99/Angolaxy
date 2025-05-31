@@ -1,0 +1,20 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { Routes, Route } from 'react-router-dom';
+import Layout from '../components/layout/Layout';
+import HomePage from '../pages/HomePage';
+import ProductPage from '../pages/ProductPage';
+import CategoryPage from '../pages/CategoryPage';
+import CartPage from '../pages/CartPage';
+import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/RegisterPage';
+import ProfilePage from '../pages/ProfilePage';
+import CheckoutPage from '../pages/CheckoutPage';
+import FavoritesPage from '../pages/FavoritesPage';
+import SellerDashboardPage from '../pages/SellerDashboardPage';
+import AboutPage from '../pages/AboutPage';
+import ContactPage from '../pages/ContactPage';
+import NotFoundPage from '../pages/NotFoundPage';
+const AppRoutes = () => {
+    return (_jsxs(Routes, { children: [_jsx(Route, { path: "/", element: _jsx(Layout, { children: _jsx(HomePage, {}) }) }), _jsx(Route, { path: "/produto/:id", element: _jsx(Layout, { children: _jsx(ProductPage, {}) }) }), _jsx(Route, { path: "/categorias/:category", element: _jsx(Layout, { children: _jsx(CategoryPage, {}) }) }), _jsx(Route, { path: "/carrinho", element: _jsx(Layout, { children: _jsx(CartPage, {}) }) }), _jsx(Route, { path: "/login", element: _jsx(Layout, { children: _jsx(LoginPage, {}) }) }), _jsx(Route, { path: "/cadastro", element: _jsx(Layout, { children: _jsx(RegisterPage, {}) }) }), _jsx(Route, { path: "/perfil", element: _jsx(Layout, { children: _jsx(ProfilePage, {}) }) }), _jsx(Route, { path: "/checkout", element: _jsx(Layout, { children: _jsx(CheckoutPage, {}) }) }), _jsx(Route, { path: "/favoritos", element: _jsx(Layout, { children: _jsx(FavoritesPage, {}) }) }), _jsx(Route, { path: "/vender", element: _jsx(Layout, { children: _jsx(SellerDashboardPage, {}) }) }), _jsx(Route, { path: "/sobre", element: _jsx(Layout, { children: _jsx(AboutPage, {}) }) }), _jsx(Route, { path: "/contato", element: _jsx(Layout, { children: _jsx(ContactPage, {}) }) }), _jsx(Route, { path: "*", element: _jsx(Layout, { children: _jsx(NotFoundPage, {}) }) })] }));
+};
+export default AppRoutes;
