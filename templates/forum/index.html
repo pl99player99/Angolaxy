@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="container-fluid bg-dark text-white py-5 mb-5">
+    <div class="container">
+        <h1>Fórum da Comunidade</h1>
+        <p class="lead">Troque conhecimentos, tire dúvidas e conecte-se com outros estudantes angolanos.</p>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Discussões Recentes</h2>
+        <a href="{{ url_for('forum.new_topic') }}" class="btn btn-primary">Novo Tópico</a>
+    </div>
+
+    <div class="card">
+        <div class="list-group list-group-flush">
+            {% for topic in topics %}
+            <div class="list-group-item p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-1"><a href="{{ url_for('forum.topic_details', topic_id=topic.id) }}" class="text-decoration-none">{{ topic.title }}</a></h4>
+                        <p class="text-muted mb-0 small">Iniciado por <strong>{{ topic.author }}</strong> em {{ topic.date }}</p>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <span class="d-block h5 mb-0">{{ topic.replies }}</span>
+                        <span class="text-muted small">Respostas</span>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <span class="badge bg-light text-dark border">{{ topic.category }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

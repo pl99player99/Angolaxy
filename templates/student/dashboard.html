@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <img src="/static/img/user1.jpg" class="rounded-circle mb-3" width="100" height="100" alt="Avatar">
+                    <h4>João Paulo</h4>
+                    <p class="text-muted">Estudante</p>
+                    <hr>
+                    <div class="list-group list-group-flush text-start">
+                        <a href="#" class="list-group-item list-group-item-action active">Meu Painel</a>
+                        <a href="#" class="list-group-item list-group-item-action">Meus Cursos</a>
+                        <a href="#" class="list-group-item list-group-item-action">Minha Biblioteca</a>
+                        <a href="#" class="list-group-item list-group-item-action">Configurações</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2 class="mb-4">Bem-vindo de volta, João!</h2>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Cursos Ativos</h5>
+                            <h2 class="mb-0">3</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Concluídos</h5>
+                            <h2 class="mb-0">1</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Certificados</h5>
+                            <h2 class="mb-0">1</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Continuar Assistindo</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <img src="/static/img/course1.jpg" class="rounded me-3" width="120" alt="Curso">
+                        <div class="flex-grow-1">
+                            <h5>Empreendedorismo em Angola</h5>
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <small class="text-muted">45% concluído • Próxima aula: Gestão de Equipes</small>
+                        </div>
+                        <a href="#" class="btn btn-primary ms-3">Continuar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="container-fluid bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <h1>Catálogo de Cursos</h1>
+        <p class="lead">Explore nossa coleção de cursos de alta qualidade para impulsionar sua carreira.</p>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">Categorias</div>
+                <div class="list-group list-group-flush">
+                    {% for category in categories %}
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas {{ category.icon }} me-2"></i> {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                {% for course in courses %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ course.image }}" class="card-img-top" alt="{{ course.title }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-info">{{ course.level }}</span>
+                                <span class="text-warning"><i class="fas fa-star"></i> {{ course.rating }}</span>
+                            </div>
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text text-muted small">{{ course.subtitle }}</p>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ course.instructor.image }}" class="rounded-circle me-2" width="30" height="30">
+                                <small>{{ course.instructor.name }}</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0 text-primary">{{ course.price_formatted }}</span>
+                                <a href="{{ url_for('courses.course_details', course_id=course.id) }}" class="btn btn-outline-primary">Ver Detalhes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="container-fluid bg-info text-white py-5 mb-5">
+    <div class="container">
+        <h1>Biblioteca Digital</h1>
+        <p class="lead">Acesse materiais de estudo, e-books e recursos exclusivos para sua formação.</p>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">Categorias</div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action active">Todos os Materiais</a>
+                    <a href="#" class="list-group-item list-group-item-action">E-books</a>
+                    <a href="#" class="list-group-item list-group-item-action">Apostilas</a>
+                    <a href="#" class="list-group-item list-group-item-action">Vídeo-aulas</a>
+                    <a href="#" class="list-group-item list-group-item-action">Modelos de Documentos</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                {% for material in materials %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ material.thumbnail }}" class="card-img-top" alt="{{ material.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ material.title }}</h5>
+                            <p class="card-text text-muted small">{{ material.description|truncate(60) }}</p>
+                            <span class="badge bg-secondary mb-2">{{ material.type }}</span>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{{ url_for('library.material_details', material_id=material.id) }}" class="btn btn-outline-info btn-sm w-100">Acessar Material</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
