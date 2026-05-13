@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCartIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { CATEGORIES } from '../../data'
@@ -18,121 +17,135 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      {/* Top bar */}
-      <div className="container-custom py-3">
-        <div className="flex items-center gap-4">
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0 text-2xl font-black text-blue-600 tracking-tight">
-            Angola<span className="text-gray-900">xy</span>
-          </Link>
+    <header style={{ position: 'sticky', top: 0, zIndex: 200, background: 'rgba(12,12,15,0.85)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
+      <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', height: '68px' }}>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex flex-1 max-w-2xl mx-auto">
+        {/* Logo */}
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <div style={{
+            width: 34, height: 34,
+            background: 'var(--gold)',
+            borderRadius: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1rem',
+          }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, color: '#0C0C0F', fontSize: '0.85rem' }}>A</span>
+          </div>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.2rem', letterSpacing: '-0.03em', color: 'var(--text)' }}>
+            Angola<span style={{ color: 'var(--gold)' }}>xy</span>
+          </span>
+        </Link>
+
+        {/* Search */}
+        <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: 520, display: 'flex' }}>
+          <div style={{ position: 'relative', width: '100%' }}>
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Pesquisar produtos, marcas e categorias..."
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-l-xl focus:outline-none focus:border-blue-500 text-sm"
+              placeholder="Pesquisar produtos..."
+              style={{
+                width: '100%',
+                background: 'var(--surface-3)',
+                border: '1px solid var(--border)',
+                borderRadius: 10,
+                padding: '9px 44px 9px 14px',
+                color: 'var(--text)',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.875rem',
+                outline: 'none',
+              }}
+              onFocus={e => { e.target.style.borderColor = 'var(--gold)'; e.target.style.boxShadow = '0 0 0 3px var(--gold-dim)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
             />
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-xl transition-colors"
-              aria-label="Pesquisar"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
-            </button>
-          </form>
-
-          {/* Actions */}
-          <div className="flex items-center gap-1 md:gap-3 flex-shrink-0">
-            <Link to="/favoritos" className="p-2 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-blue-600 transition-colors" aria-label="Favoritos">
-              <HeartIcon className="h-6 w-6" />
-            </Link>
-
-            <Link to="/carrinho" className="relative p-2 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-blue-600 transition-colors" aria-label="Carrinho">
-              <ShoppingCartIcon className="h-6 w-6" />
-              {itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {itemCount > 9 ? '9+' : itemCount}
-                </span>
-              )}
-            </Link>
-
-            {user ? (
-              <div className="relative group">
-                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 text-gray-700 transition-colors text-sm font-medium">
-                  <UserIcon className="h-6 w-6" />
-                  <span className="hidden md:inline">{user.name.split(' ')[0]}</span>
-                </button>
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150">
-                  <Link to="/perfil" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    O Meu Perfil
-                  </Link>
-                  <Link to="/pedidos" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    Os Meus Pedidos
-                  </Link>
-                  <Link to="/favoritos" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    Favoritos
-                  </Link>
-                  {user.type === 'seller' && (
-                    <Link to="/vender" className="block px-4 py-2 text-sm text-blue-600 font-medium hover:bg-blue-50">
-                      Dashboard Vendedor
-                    </Link>
-                  )}
-                  <hr className="my-1 border-gray-100" />
-                  <button onClick={logout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    Terminar Sessão
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <Link to="/login" className="hidden md:flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors">
-                <UserIcon className="h-4 w-4" />
-                Entrar
-              </Link>
-            )}
-
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menu"
-            >
-              {menuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+            <button type="submit" style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1rem' }}>
+              ⌕
             </button>
           </div>
+        </form>
+
+        {/* Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto', flexShrink: 0 }}>
+          <Link to="/favoritos" title="Favoritos" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, color: 'var(--text-muted)', background: 'transparent', transition: 'all 0.15s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            ♡
+          </Link>
+
+          <Link to="/carrinho" style={{ position: 'relative', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, color: 'var(--text-muted)', background: 'transparent', transition: 'all 0.15s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            🛒
+            {itemCount > 0 && (
+              <span style={{ position: 'absolute', top: 2, right: 2, background: 'var(--gold)', color: '#0C0C0F', fontSize: '0.6rem', fontWeight: 800, borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {itemCount > 9 ? '9+' : itemCount}
+              </span>
+            )}
+          </Link>
+
+          {user ? (
+            <div style={{ position: 'relative' }} className="group">
+              <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px', background: 'var(--surface-3)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--text)', fontSize: '0.85rem', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
+                <span style={{ width: 22, height: 22, background: 'var(--gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800, color: '#0C0C0F' }}>{user.name[0]}</span>
+                {user.name.split(' ')[0]}
+              </button>
+              <div style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', width: 190, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 12, padding: '6px', display: 'none' }} className="dropdown">
+                {[['O Meu Perfil', '/perfil'], ['Pedidos', '/pedidos'], ['Favoritos', '/favoritos']].map(([label, to]) => (
+                  <Link key={to} to={to} style={{ display: 'block', padding: '8px 12px', borderRadius: 8, fontSize: '0.875rem', color: 'var(--text-muted)', transition: 'all 0.1s' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+                    {label}
+                  </Link>
+                ))}
+                <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
+                <button onClick={logout} style={{ width: '100%', textAlign: 'left', padding: '8px 12px', borderRadius: 8, fontSize: '0.875rem', color: 'var(--red)', background: 'transparent', transition: 'all 0.1s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(224,82,82,0.08)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                  Sair
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-ghost btn-sm" style={{ display: 'none' }}>Entrar</Link>
+              <Link to="/login" className="btn btn-ghost btn-sm">Entrar</Link>
+              <Link to="/cadastro" className="btn btn-gold btn-sm">Criar conta</Link>
+            </>
+          )}
+
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', background: 'var(--surface-3)', border: '1px solid var(--border)', borderRadius: 8, color: 'var(--text)', fontSize: '1.1rem' }}
+            className="mobile-menu-btn">
+            {menuOpen ? '✕' : '☰'}
+          </button>
         </div>
       </div>
 
       {/* Category nav */}
-      <nav className={`bg-gray-50 border-t border-gray-200 ${menuOpen ? 'block' : 'hidden md:block'}`}>
-        <div className="container-custom">
-          <ul className="flex flex-col md:flex-row md:gap-1 py-1">
-            {CATEGORIES.map(cat => (
-              <li key={cat.id}>
-                <Link
-                  to={`/categorias/${cat.slug}`}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>{cat.icon}</span>
-                  {cat.name}
-                </Link>
-              </li>
-            ))}
-            <li className="md:ml-auto">
-              <Link
-                to="/vender"
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                🏪 Vender no Angolaxy
-              </Link>
-            </li>
-          </ul>
+      <nav style={{ borderTop: '1px solid var(--border)', background: 'rgba(12,12,15,0.6)' }}>
+        <div className="container" style={{ display: 'flex', gap: '2px', overflowX: 'auto', padding: '0 1.5rem' }}>
+          {CATEGORIES.map(cat => (
+            <Link key={cat.id} to={`/categorias/${cat.slug}`}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-muted)', whiteSpace: 'nowrap', borderRadius: 8, transition: 'all 0.15s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--gold)'; (e.currentTarget as HTMLElement).style.background = 'var(--gold-dim)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              <span>{cat.icon}</span>{cat.name}
+            </Link>
+          ))}
+          <Link to="/vender"
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap', borderRadius: 8, marginLeft: 'auto', transition: 'all 0.15s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold-dim)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+            🏪 Vender
+          </Link>
         </div>
       </nav>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .mobile-menu-btn { display: flex !important; }
+        }
+        .group:hover .dropdown { display: block !important; }
+      `}</style>
     </header>
   )
 }

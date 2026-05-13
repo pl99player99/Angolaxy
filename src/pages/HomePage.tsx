@@ -1,79 +1,133 @@
 import { Link } from 'react-router-dom'
-import { ArrowRightIcon, ShieldCheckIcon, TruckIcon, CurrencyDollarIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import ProductCard from '../components/common/ProductCard'
 import { PRODUCTS, CATEGORIES } from '../data'
 
+const trusts = [
+  { icon: '🚚', label: 'Entrega Nacional', sub: 'Todo o território angolano' },
+  { icon: '🔒', label: 'Compra Segura', sub: 'Pagamentos protegidos' },
+  { icon: '💰', label: 'Preços em Kz', sub: 'Sem surpresas cambiais' },
+  { icon: '🎯', label: 'Suporte 24/7', sub: 'Sempre disponíveis' },
+]
+
+const marqueeItems = ['Electrónica', 'Moda', 'Desporto', 'Beleza', 'Casa', 'Supermercado', 'Câmeras', 'Sapatos', 'Laptops', 'Smartwatches']
+
 const HomePage = () => {
-  const featured = PRODUCTS.filter((_, i) => i < 4)
-  const newArrivals = PRODUCTS.filter((_, i) => i >= 4)
+  const featured = PRODUCTS.slice(0, 4)
+  const recent = PRODUCTS.slice(4)
 
   return (
     <div>
       {/* ── HERO ── */}
-      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 text-white overflow-hidden">
-        <div className="container-custom py-16 md:py-24">
-          <div className="flex flex-col md:flex-row items-center gap-10">
-            <div className="md:w-1/2 space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur px-4 py-1.5 rounded-full text-sm font-medium">
-                🇦🇴 O marketplace #1 de Angola
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black leading-tight">
-                Compre e Venda<br />
-                com <span className="text-blue-200">confiança</span> e<br />
-                <span className="text-blue-200">segurança</span>
-              </h1>
-              <p className="text-blue-100 text-lg leading-relaxed max-w-md">
-                Milhares de produtos das melhores marcas, entrega em todo o território angolano, pagamento por Multicaixa e muito mais.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link to="/categorias/electronica" className="btn-primary bg-white text-blue-700 hover:bg-blue-50">
-                  Explorar Produtos <ArrowRightIcon className="h-4 w-4" />
-                </Link>
-                <Link to="/vender" className="btn-outline border-white text-white hover:bg-white/10">
-                  Começar a Vender
-                </Link>
-              </div>
-              <div className="flex gap-6 pt-2 text-sm">
-                <div><span className="font-black text-2xl">10K+</span><p className="text-blue-200">Produtos</p></div>
-                <div><span className="font-black text-2xl">5K+</span><p className="text-blue-200">Vendedores</p></div>
-                <div><span className="font-black text-2xl">50K+</span><p className="text-blue-200">Clientes</p></div>
-              </div>
+      <section style={{
+        minHeight: '88vh',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'radial-gradient(ellipse 80% 60% at 50% -20%, rgba(201,168,76,0.08) 0%, transparent 70%), var(--surface)',
+      }}>
+        {/* Grid pattern */}
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.035,
+          backgroundImage: 'linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }} />
+
+        {/* Glow orb */}
+        <div style={{
+          position: 'absolute', top: '15%', right: '8%',
+          width: 480, height: 480,
+          background: 'radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(40px)',
+        }} />
+
+        <div className="container" style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', padding: '5rem 1.5rem' }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--gold-dim)', border: '1px solid var(--border-gold)', borderRadius: 20, padding: '5px 14px', marginBottom: '1.5rem' }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)' }}>🇦🇴 Marketplace #1 de Angola</span>
             </div>
-            <div className="md:w-1/2">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="/images/hero-image.jpg" alt="Marketplace Angolaxy" className="w-full aspect-[4/3] object-cover" />
-                <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur rounded-xl p-3 shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-gray-500">Smartphone XYZ Pro</p>
-                      <p className="font-black text-gray-900">120.000 Kz</p>
-                    </div>
-                    <span className="badge badge-red text-sm">-14%</span>
-                  </div>
+
+            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(2.8rem, 5vw, 4.2rem)', lineHeight: 1.0, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+              Compra.<br />
+              Vende.<br />
+              <span className="gold-text">Cresce.</span>
+            </h1>
+
+            <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: 1.75, maxWidth: 420, marginBottom: '2rem' }}>
+              Milhares de produtos das melhores marcas angolanas e internacionais. Entrega em todo o território, pagamento por Multicaixa.
+            </p>
+
+            <div style={{ display: 'flex', gap: '0.85rem', flexWrap: 'wrap', marginBottom: '3rem' }}>
+              <Link to="/categorias/electronica" className="btn btn-gold btn-lg">
+                Explorar Produtos →
+              </Link>
+              <Link to="/vender" className="btn btn-outline btn-lg">
+                Vender aqui
+              </Link>
+            </div>
+
+            <div style={{ display: 'flex', gap: '2rem' }}>
+              {[['10K+', 'Produtos'], ['5K+', 'Vendedores'], ['50K+', 'Clientes']].map(([n, l]) => (
+                <div key={l}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '1.6rem', letterSpacing: '-0.03em', color: 'var(--gold)' }}>{n}</p>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{l}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero visual */}
+          <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="float" style={{ gridRow: '1 / 3', borderRadius: 20, overflow: 'hidden', border: '1px solid var(--border-gold)' }}>
+              <img src="/images/smartphone.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)' }}>
+              <img src="/images/headphones.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)' }}>
+              <img src="/images/shoes.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+
+            {/* Floating price tag */}
+            <div style={{
+              position: 'absolute', bottom: -16, left: -16,
+              background: 'var(--surface-2)', border: '1px solid var(--border-gold)',
+              borderRadius: 14, padding: '14px 18px',
+              backdropFilter: 'blur(12px)',
+            }}>
+              <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: 2 }}>Smartphone XYZ Pro</p>
+              <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem', color: 'var(--gold)' }}>120.000 Kz</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                {[1,2,3,4,5].map(i => <span key={i} style={{ fontSize: 10, color: 'var(--gold)' }}>★</span>)}
+                <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>(120)</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── TRUST BARS ── */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="container-custom py-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: TruckIcon, title: 'Entrega Nacional', desc: 'Todo o território angolano' },
-              { icon: ShieldCheckIcon, title: 'Compra Segura', desc: 'Pagamentos protegidos' },
-              { icon: CurrencyDollarIcon, title: 'Preços em Kz', desc: 'Sem surpresas cambiais' },
-              { icon: ChatBubbleLeftRightIcon, title: 'Suporte 24/7', desc: 'Estamos sempre aqui' },
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex items-center gap-3">
-                <div className="p-2 bg-blue-50 rounded-xl flex-shrink-0">
-                  <Icon className="h-6 w-6 text-blue-600" />
-                </div>
+      {/* ── MARQUEE ── */}
+      <div style={{ background: 'var(--gold)', padding: '12px 0', overflow: 'hidden' }}>
+        <div className="marquee-track">
+          {[...marqueeItems, ...marqueeItems].map((item, i) => (
+            <span key={i} style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#0C0C0F', padding: '0 2rem' }}>
+              {item} <span style={{ opacity: 0.4 }}>✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── TRUST ── */}
+      <section style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
+        <div className="container" style={{ padding: '1.75rem 1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            {trusts.map(t => (
+              <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: '1.5rem' }}>{t.icon}</span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">{title}</p>
-                  <p className="text-xs text-gray-500">{desc}</p>
+                  <p style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.875rem' }}>{t.label}</p>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>{t.sub}</p>
                 </div>
               </div>
             ))}
@@ -82,23 +136,24 @@ const HomePage = () => {
       </section>
 
       {/* ── CATEGORIES ── */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="section-title">Categorias Populares</h2>
-            <Link to="/categorias/electronica" className="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1">
-              Ver todas <ArrowRightIcon className="h-4 w-4" />
-            </Link>
+      <section className="section">
+        <div className="container">
+          <div className="section-label">Categorias</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            <h2 className="section-title">Explore por área</h2>
+            <Link to="/categorias/electronica" style={{ fontSize: '0.82rem', color: 'var(--gold)', fontWeight: 600 }}>Ver todas →</Link>
           </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.85rem' }}>
             {CATEGORIES.map(cat => (
               <Link key={cat.id} to={`/categorias/${cat.slug}`}
-                className="group flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm hover:shadow-md hover:border-blue-200 border border-transparent transition-all duration-200 text-center">
-                <div className="w-14 h-14 rounded-full overflow-hidden mb-2 ring-2 ring-gray-100 group-hover:ring-blue-200 transition-all">
-                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <p className="text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">{cat.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{cat.count} produtos</p>
+                className="card"
+                style={{ padding: '1.25rem', textAlign: 'center', transition: 'all 0.2s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-gold)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}>
+                <div style={{ fontSize: '2rem', marginBottom: 8 }}>{cat.icon}</div>
+                <p style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.82rem', color: 'var(--text)' }}>{cat.name}</p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: 2 }}>{cat.count} produtos</p>
               </Link>
             ))}
           </div>
@@ -106,66 +161,75 @@ const HomePage = () => {
       </section>
 
       {/* ── FEATURED PRODUCTS ── */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="section-title">Produtos em Destaque</h2>
-            <Link to="/categorias/electronica" className="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1">
-              Ver mais <ArrowRightIcon className="h-4 w-4" />
-            </Link>
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div className="section-label">Destaque</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            <h2 className="section-title">Produtos em destaque</h2>
+            <Link to="/categorias/electronica" style={{ fontSize: '0.82rem', color: 'var(--gold)', fontWeight: 600 }}>Ver mais →</Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="products-grid">
             {featured.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
 
       {/* ── PROMO BANNER ── */}
-      <section className="py-8">
-        <div className="container-custom">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-8 md:p-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-white">
-                <h2 className="text-2xl md:text-3xl font-black mb-2">Venda os seus produtos no Angolaxy</h2>
-                <p className="text-blue-200 text-lg">Alcance milhares de clientes em toda Angola. Comece hoje, é grátis.</p>
-              </div>
-              <Link to="/vender" className="flex-shrink-0 bg-white text-blue-700 font-bold px-8 py-3 rounded-xl hover:bg-blue-50 transition-colors text-lg whitespace-nowrap">
-                Começar a Vender →
-              </Link>
+      <section style={{ padding: '0 0 5rem' }}>
+        <div className="container">
+          <div style={{
+            background: 'var(--surface-2)',
+            border: '1px solid var(--border-gold)',
+            borderRadius: 24,
+            padding: '3.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '2rem',
+            flexWrap: 'wrap',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <div style={{ position: 'absolute', right: -60, top: -60, width: 280, height: 280, background: 'radial-gradient(circle, var(--gold-dim) 0%, transparent 70%)', borderRadius: '50%' }} />
+            <div>
+              <div className="section-label" style={{ marginBottom: '0.75rem' }}>Para vendedores</div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(1.4rem, 2.5vw, 2rem)', letterSpacing: '-0.03em', marginBottom: '0.6rem' }}>
+                Venda para Angola inteira
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: 420 }}>Alcance milhares de compradores em todas as províncias. Comece hoje, gratuitamente.</p>
             </div>
+            <Link to="/vender" className="btn btn-gold btn-lg" style={{ flexShrink: 0, position: 'relative' }}>
+              Começar a Vender →
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ── NEW ARRIVALS ── */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="section-title">Chegadas Recentes</h2>
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div className="section-label">Novidades</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            <h2 className="section-title">Chegadas recentes</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {newArrivals.map(p => <ProductCard key={p.id} product={p} />)}
+          <div className="products-grid">
+            {recent.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
 
       {/* ── NEWSLETTER ── */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="section-title mb-3">Fique sempre atualizado</h2>
-            <p className="text-gray-500 mb-6">Receba as melhores ofertas e novidades do Angolaxy directamente no seu e-mail.</p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-              onSubmit={e => { e.preventDefault() }}>
-              <input
-                type="email"
-                placeholder="O seu endereço de e-mail"
-                className="flex-1 input"
-                required
-              />
-              <button type="submit" className="btn-primary flex-shrink-0">
-                Subscrever
-              </button>
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}>
+            <div className="section-label" style={{ justifyContent: 'center' }}>Newsletter</div>
+            <h2 className="section-title" style={{ marginBottom: '0.75rem' }}>Fique sempre à frente</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
+              Receba as melhores ofertas e novidades directamente no e-mail.
+            </p>
+            <form style={{ display: 'flex', gap: 8 }} onSubmit={e => e.preventDefault()}>
+              <input type="email" placeholder="O seu e-mail" className="input" style={{ flex: 1 }} required />
+              <button type="submit" className="btn btn-gold" style={{ flexShrink: 0 }}>Subscrever</button>
             </form>
           </div>
         </div>

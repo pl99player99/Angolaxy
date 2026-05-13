@@ -12,63 +12,59 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
+    setError(''); setLoading(true)
     const ok = await login(email, password)
     setLoading(false)
     if (ok) navigate('/')
-    else setError('E-mail ou senha incorrectos. Tente novamente.')
+    else setError('E-mail ou senha incorrectos.')
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-blue-50 to-white py-12 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="text-3xl font-black text-blue-600">Angola<span className="text-gray-900">xy</span></Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-1">Bem-vindo de volta</h1>
-          <p className="text-gray-500 text-sm">Entre na sua conta para continuar</p>
+    <div style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1rem', background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 70%)' }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: '1.5rem' }}>
+            <div style={{ width: 36, height: 36, background: 'var(--gold)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, color: '#0C0C0F' }}>A</span>
+            </div>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.03em' }}>
+              Angola<span style={{ color: 'var(--gold)' }}>xy</span>
+            </span>
+          </Link>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '0.4rem' }}>Bem-vindo de volta</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Entre na sua conta para continuar</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="card" style={{ padding: '2rem' }}>
           {error && (
-            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+            <div style={{ marginBottom: '1.25rem', padding: '10px 14px', background: 'rgba(224,82,82,0.08)', border: '1px solid rgba(224,82,82,0.25)', borderRadius: 10, fontSize: '0.875rem', color: 'var(--red)' }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">E-mail</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="input" placeholder="seu@email.com" autoFocus />
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, fontFamily: 'var(--font-display)', color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>E-mail</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="input" placeholder="seu@email.com" autoFocus />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex justify-between">
+              <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, fontFamily: 'var(--font-display)', color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Senha
-                <a href="#" className="text-blue-600 font-medium text-xs hover:underline">Esqueceu a senha?</a>
+                <a href="#" style={{ color: 'var(--gold)', fontWeight: 500, textTransform: 'none', letterSpacing: 0, fontSize: '0.8rem' }}>Esqueceu?</a>
               </label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                className="input" placeholder="A sua senha" minLength={6} />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="input" placeholder="••••••••" minLength={6} />
             </div>
 
-            <button type="submit" disabled={loading}
-              className={`w-full py-3 rounded-xl font-bold text-white transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            <button type="submit" disabled={loading} className="btn btn-gold btn-full" style={{ marginTop: 6, opacity: loading ? 0.7 : 1 }}>
               {loading ? 'A entrar...' : 'Entrar'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div style={{ textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
             Não tem conta?{' '}
-            <Link to="/cadastro" className="text-blue-600 font-semibold hover:underline">Criar conta grátis</Link>
+            <Link to="/cadastro" style={{ color: 'var(--gold)', fontWeight: 600 }}>Criar conta grátis</Link>
           </div>
         </div>
-
-        <p className="text-xs text-gray-400 text-center mt-4">
-          Ao entrar, aceita os nossos{' '}
-          <Link to="/termos-uso" className="hover:underline">Termos de Uso</Link>
-          {' '}e{' '}
-          <Link to="/politica-privacidade" className="hover:underline">Política de Privacidade</Link>
-        </p>
       </div>
     </div>
   )
