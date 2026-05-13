@@ -1,165 +1,123 @@
-import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import { useCart } from '../context/CartContext'
+import { formatKz, discountedPrice } from '../data'
 
 const CartPage = () => {
-  const { items, removeItem, updateQuantity, total, clearCart } = useCart();
+  const { items, removeItem, updateQuantity, clearCart, subtotal } = useCart()
 
-  const handleQuantityChange = (id: number, quantity: number) => {
-    if (quantity > 0) {
-      updateQuantity(id, quantity);
-    }
-  };
+  if (items.length === 0) {
+    return (
+      <div className="container-custom py-24 text-center">
+        <ShoppingBagIcon className="h-20 w-20 text-gray-200 mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-gray-700 mb-2">O seu carrinho está vazio</h1>
+        <p className="text-gray-400 mb-8">Explore os nossos produtos e adicione itens ao carrinho.</p>
+        <Link to="/" className="btn-primary">Continuar a Comprar</Link>
+      </div>
+    )
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Carrinho de Compras</h1>
+    <div className="container-custom py-8">
+      <h1 className="text-2xl font-black mb-6">Carrinho de Compras <span className="text-gray-400 text-lg font-normal">({items.length} {items.length === 1 ? 'item' : 'itens'})</span></h1>
 
-      {items.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-gray-400 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-semibold mb-4">Seu carrinho está vazio</h2>
-          <p className="text-gray-600 mb-8">Explore nossos produtos e adicione itens ao seu carrinho</p>
-          <Link 
-            to="/" 
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Continuar Comprando
-          </Link>
-        </div>
-      ) : (
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Lista de itens */}
-          <div className="lg:w-2/3">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold">Itens do Carrinho ({items.length})</h2>
-              </div>
-              
-              {items.map((item) => (
-                <div key={item.id} className="p-6 border-b border-gray-200 flex flex-col md:flex-row items-center">
-                  {/* Imagem do produto */}
-                  <div className="w-full md:w-1/4 mb-4 md:mb-0">
-                    <div className="bg-gray-100 h-24 w-24 rounded-lg flex items-center justify-center">
-                      {/* Placeholder para imagem */}
-                      <div className="text-gray-500 text-sm">Imagem</div>
-                    </div>
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Items */}
+        <div className="flex-1">
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            {items.map((item, i) => {
+              const itemPrice = discountedPrice(item.price, item.discount)
+              return (
+                <div key={item.id} className={`flex items-center gap-4 p-5 ${i < items.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                  <Link to={`/produto/${item.id}`} className="flex-shrink-0">
+                    <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl bg-gray-100" />
+                  </Link>
+
+                  <div className="flex-1 min-w-0">
+                    <Link to={`/produto/${item.id}`} className="font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 block mb-1">
+                      {item.name}
+                    </Link>
+                    <p className="text-blue-600 font-black">{formatKz(itemPrice)}</p>
+                    {item.discount > 0 && (
+                      <p className="text-xs text-gray-400 line-through">{formatKz(item.price)}</p>
+                    )}
                   </div>
-                  
-                  {/* Detalhes do produto */}
-                  <div className="w-full md:w-2/4 mb-4 md:mb-0">
-                    <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
-                    <p className="text-gray-600 text-sm mb-2">ID: {item.id}</p>
-                    <button 
-                      onClick={() => removeItem(item.id)}
-                      className="text-red-600 hover:text-red-800 text-sm font-medium"
-                    >
-                      Remover
-                    </button>
+
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold transition-colors flex items-center justify-center">−</button>
+                    <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold transition-colors flex items-center justify-center">+</button>
                   </div>
-                  
-                  {/* Quantidade */}
-                  <div className="w-full md:w-1/4 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <button 
-                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                        className="bg-gray-200 px-3 py-1 rounded-l-lg hover:bg-gray-300"
-                      >
-                        -
-                      </button>
-                      <input 
-                        type="number" 
-                        value={item.quantity}
-                        onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                        className="w-12 text-center border-t border-b border-gray-300 py-1"
-                        min="1"
-                      />
-                      <button 
-                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                        className="bg-gray-200 px-3 py-1 rounded-r-lg hover:bg-gray-300"
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="font-bold">
-                      {(item.price * item.quantity / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                    </div>
+
+                  <div className="text-right min-w-[80px]">
+                    <p className="font-black text-gray-900">{formatKz(itemPrice * item.quantity)}</p>
                   </div>
-                </div>
-              ))}
-              
-              <div className="p-6 flex justify-between">
-                <button 
-                  onClick={clearCart}
-                  className="text-red-600 hover:text-red-800 font-medium"
-                >
-                  Limpar Carrinho
-                </button>
-                <Link 
-                  to="/" 
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Continuar Comprando
-                </Link>
-              </div>
-            </div>
-          </div>
-          
-          {/* Resumo do pedido */}
-          <div className="lg:w-1/3">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h2 className="text-xl font-semibold mb-6">Resumo do Pedido</h2>
-              
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>{(total / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Frete</span>
-                  <span>A calcular</span>
-                </div>
-                <div className="pt-4 border-t border-gray-200 flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>{(total / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</span>
-                </div>
-              </div>
-              
-              {/* Cupom de desconto */}
-              <div className="mb-6">
-                <label htmlFor="coupon" className="block text-gray-700 font-medium mb-2">
-                  Cupom de desconto
-                </label>
-                <div className="flex">
-                  <input
-                    type="text"
-                    id="coupon"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-blue-500"
-                    placeholder="Digite seu cupom"
-                  />
-                  <button
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r-lg hover:bg-gray-300"
-                  >
-                    Aplicar
+
+                  <button onClick={() => removeItem(item.id)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0">
+                    <TrashIcon className="h-5 w-5" />
                   </button>
                 </div>
-              </div>
-              
-              <Link
-                to="/checkout"
-                className="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-center hover:bg-blue-700 transition-colors"
-              >
-                Finalizar Compra
+              )
+            })}
+
+            <div className="p-5 border-t border-gray-100 flex justify-between">
+              <button onClick={clearCart} className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
+                <TrashIcon className="h-4 w-4" /> Esvaziar carrinho
+              </button>
+              <Link to="/" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                ← Continuar a Comprar
               </Link>
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-};
 
-export default CartPage;
+        {/* Summary */}
+        <div className="lg:w-80 flex-shrink-0">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+            <h2 className="font-bold text-gray-900 mb-5 text-lg">Resumo do Pedido</h2>
+
+            <div className="space-y-3 mb-5 text-sm">
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal ({items.reduce((t,i) => t + i.quantity, 0)} produtos)</span>
+                <span className="font-medium text-gray-900">{formatKz(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Entrega</span>
+                <span className="text-green-600 font-medium">A calcular</span>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 pt-4 mb-5">
+              <div className="flex justify-between font-black text-lg">
+                <span>Total</span>
+                <span>{formatKz(subtotal)}</span>
+              </div>
+            </div>
+
+            {/* Coupon */}
+            <div className="mb-5">
+              <div className="flex gap-2">
+                <input type="text" placeholder="Código de desconto" className="input flex-1 text-sm py-2" />
+                <button className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-medium transition-colors">Aplicar</button>
+              </div>
+            </div>
+
+            <Link to="/checkout"
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors text-base">
+              Finalizar Compra →
+            </Link>
+
+            <p className="text-xs text-gray-400 text-center mt-3">
+              🔒 Pagamento seguro — Multicaixa, transferência ou dinheiro na entrega
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default CartPage

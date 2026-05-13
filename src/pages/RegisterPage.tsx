@@ -1,223 +1,93 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    accountType: 'buyer', // 'buyer' ou 'seller'
-    termsAccepted: false
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  
-  const { register } = useAuth();
-  const navigate = useNavigate();
+  const { register } = useAuth()
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '', type: 'buyer' as 'buyer' | 'seller' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-  };
-
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      accountType: e.target.value
-    });
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem');
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      const success = await register(formData);
-      if (success) {
-        navigate('/');
-      } else {
-        setError('Não foi possível completar o cadastro. Por favor, tente novamente.');
-      }
-    } catch (err) {
-      setError('Ocorreu um erro ao fazer o cadastro. Por favor, tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    e.preventDefault()
+    if (form.password !== form.confirm) return setError('As senhas não coincidem.')
+    if (form.password.length < 8) return setError('A senha deve ter no mínimo 8 caracteres.')
+    setError(''); setLoading(true)
+    const ok = await register({ name: form.name, email: form.email, password: form.password, type: form.type })
+    setLoading(false)
+    if (ok) navigate('/')
+    else setError('Não foi possível criar a conta. Tente novamente.')
+  }
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-lg mx-auto bg-white rounded-xl shadow-sm p-8">
+    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-blue-50 to-white py-12 px-4">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Criar uma conta</h1>
-          <p className="text-gray-600 mt-2">
-            Junte-se ao Angolaxy para comprar e vender produtos
-          </p>
+          <Link to="/" className="text-3xl font-black text-blue-600">Angola<span className="text-gray-900">xy</span></Link>
+          <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-1">Criar conta grátis</h1>
+          <p className="text-gray-500 text-sm">Comece a comprar ou a vender hoje</p>
         </div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
-              Nome completo
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Seu nome completo"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          {/* Account type */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {[['buyer', '🛒 Comprador', 'Quero comprar produtos'], ['seller', '🏪 Vendedor', 'Quero vender produtos']].map(([val, label, desc]) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setForm(f => ({ ...f, type: val as 'buyer' | 'seller' }))}
+                className={`p-3 rounded-xl border-2 text-left transition-all ${form.type === val ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+              >
+                <p className="font-semibold text-sm">{label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+              </button>
+            ))}
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="seu@email.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>
+          )}
 
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
-              Senha
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Mínimo 8 caracteres"
-              value={formData.password}
-              onChange={handleChange}
-              minLength={8}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-gray-700 font-medium mb-2">
-              Confirmar senha
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Confirme sua senha"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              minLength={8}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <p className="block text-gray-700 font-medium mb-2">Tipo de conta</p>
-            <div className="flex space-x-4">
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="buyer"
-                  name="accountType"
-                  value="buyer"
-                  checked={formData.accountType === 'buyer'}
-                  onChange={handleRadioChange}
-                  className="h-4 w-4 text-blue-600 border-gray-300"
-                />
-                <label htmlFor="buyer" className="ml-2 block text-gray-700">
-                  Comprador
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="seller"
-                  name="accountType"
-                  value="seller"
-                  checked={formData.accountType === 'seller'}
-                  onChange={handleRadioChange}
-                  className="h-4 w-4 text-blue-600 border-gray-300"
-                />
-                <label htmlFor="seller" className="ml-2 block text-gray-700">
-                  Vendedor
-                </label>
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nome Completo</label>
+              <input name="name" value={form.name} onChange={handleChange} required className="input" placeholder="João Paulo Silva" autoFocus />
             </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">E-mail</label>
+              <input name="email" value={form.email} onChange={handleChange} type="email" required className="input" placeholder="seu@email.com" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Senha</label>
+              <input name="password" value={form.password} onChange={handleChange} type="password" required minLength={8} className="input" placeholder="Mínimo 8 caracteres" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirmar Senha</label>
+              <input name="confirm" value={form.confirm} onChange={handleChange} type="password" required className="input" placeholder="Repita a senha" />
+            </div>
+
+            <div className="flex items-start gap-2 text-xs text-gray-500">
+              <input type="checkbox" required className="mt-0.5 accent-blue-600" />
+              <span>Aceito os <Link to="/termos-uso" className="text-blue-600 hover:underline">Termos de Uso</Link> e a <Link to="/politica-privacidade" className="text-blue-600 hover:underline">Política de Privacidade</Link></span>
+            </div>
+
+            <button type="submit" disabled={loading}
+              className={`w-full py-3 rounded-xl font-bold text-white transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}>
+              {loading ? 'A criar conta...' : 'Criar Conta'}
+            </button>
+          </form>
+
+          <div className="mt-5 text-center text-sm text-gray-500">
+            Já tem conta? <Link to="/login" className="text-blue-600 font-semibold hover:underline">Entrar</Link>
           </div>
-
-          <div className="flex items-center mb-6">
-            <input
-              type="checkbox"
-              id="termsAccepted"
-              name="termsAccepted"
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-              checked={formData.termsAccepted}
-              onChange={handleChange}
-              required
-            />
-            <label htmlFor="termsAccepted" className="ml-2 block text-gray-700">
-              Eu concordo com os{' '}
-              <Link to="/termos-uso" className="text-blue-600 hover:text-blue-800">
-                Termos de Uso
-              </Link>{' '}
-              e{' '}
-              <Link to="/politica-privacidade" className="text-blue-600 hover:text-blue-800">
-                Política de Privacidade
-              </Link>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className={`w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors ${
-              isLoading ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Cadastrando...' : 'Criar conta'}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Já tem uma conta?{' '}
-            <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
-              Entrar
-            </Link>
-          </p>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RegisterPage;
+export default RegisterPage

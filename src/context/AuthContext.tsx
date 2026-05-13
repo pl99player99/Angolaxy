@@ -1,112 +1,54 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode } from 'react'
 
-// Definir o tipo para um usuário
 interface User {
-  id: number;
-  name: string;
-  email: string;
-  accountType: 'buyer' | 'seller';
+  id: number
+  name: string
+  email: string
+  type: 'buyer' | 'seller'
+  avatar?: string
 }
 
-// Definir o tipo para o contexto de autenticação
 interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: any) => Promise<boolean>;
-  logout: () => void;
+  user: User | null
+  isAuthenticated: boolean
+  login: (email: string, password: string) => Promise<boolean>
+  register: (data: { name: string; email: string; password: string; type: 'buyer' | 'seller' }) => Promise<boolean>
+  logout: () => void
 }
 
-// Criar o contexto
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Props para o provedor do contexto
-interface AuthProviderProps {
-  children: ReactNode;
-}
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null)
 
-// Provedor do contexto de autenticação
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  // Verificar se o usuário está autenticado
-  const isAuthenticated = user !== null;
-
-  // Função de login
   const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      // Simulação de uma chamada de API para autenticação
-      // Em um ambiente real, isso seria uma chamada para um backend
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Simulando um login bem-sucedido
-          if (email && password) {
-            setUser({
-              id: 1,
-              name: 'Usuário Teste',
-              email: email,
-              accountType: 'buyer'
-            });
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        }, 1000);
-      });
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      return false;
+    // TODO: Replace with real API call
+    await new Promise(r => setTimeout(r, 800))
+    if (email && password.length >= 6) {
+      setUser({ id: 1, name: 'Utilizador Demo', email, type: 'buyer' })
+      return true
     }
-  };
+    return false
+  }
 
-  // Função de registro
-  const register = async (userData: any): Promise<boolean> => {
-    try {
-      // Simulação de uma chamada de API para registro
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Simulando um registro bem-sucedido
-          setUser({
-            id: 2,
-            name: userData.name,
-            email: userData.email,
-            accountType: userData.accountType
-          });
-          resolve(true);
-        }, 1000);
-      });
-    } catch (error) {
-      console.error('Erro ao registrar:', error);
-      return false;
-    }
-  };
+  const register = async (data: { name: string; email: string; password: string; type: 'buyer' | 'seller' }): Promise<boolean> => {
+    // TODO: Replace with real API call
+    await new Promise(r => setTimeout(r, 800))
+    setUser({ id: 2, name: data.name, email: data.email, type: data.type })
+    return true
+  }
 
-  // Função de logout
-  const logout = () => {
-    setUser(null);
-  };
-
-  // Valor do contexto
-  const value = {
-    user,
-    isAuthenticated,
-    login,
-    register,
-    logout
-  };
+  const logout = () => setUser(null)
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
-// Hook personalizado para usar o contexto de autenticação
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-  }
-  return context;
-};
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error('useAuth must be inside AuthProvider')
+  return ctx
+}

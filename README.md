@@ -1,119 +1,74 @@
-# Instruções de Uso do Marketplace Angolaxy
+# Angolaxy — Marketplace Angola 🇦🇴
 
-## Visão Geral
+Marketplace angolano para compra e venda online, construído com React + TypeScript + Tailwind CSS.
 
-O Angolaxy é um marketplace angolano completo para compra e venda online com segurança. Este documento fornece instruções para executar, testar e expandir o projeto.
+## Stack
 
-## Requisitos do Sistema
+- **React 18** + **TypeScript**
+- **Tailwind CSS** — estilização utility-first
+- **React Router v7** — roteamento SPA
+- **Vite** — bundler e dev server
+- **Vercel** — hosting e deploy automático
 
-- Node.js (versão 16 ou superior)
-- npm ou pnpm (recomendado)
-- Navegador web moderno (Chrome, Firefox, Safari, Edge)
+## Início Rápido (local)
 
-## Estrutura do Projeto
+```bash
+npm install
+npm run dev
+# Abre em http://localhost:5173
+```
 
-O projeto segue uma arquitetura modular baseada em React e TypeScript:
+## Build para produção
+
+```bash
+npm run build
+# Output em /dist
+```
+
+## Deploy no Vercel
+
+1. Faça push do repositório para o GitHub
+2. Aceda a [vercel.com](https://vercel.com) → **New Project**
+3. Importe o repositório
+4. As configurações são detectadas automaticamente:
+   - **Framework:** Vite
+   - **Build command:** `npm run build`
+   - **Output dir:** `dist`
+5. Clique **Deploy** — pronto!
+
+O ficheiro `vercel.json` já configura o redirecionamento SPA automaticamente.
+
+## Variáveis de Ambiente (para produção)
+
+Quando integrar um backend real, adicione no Vercel:
+
+```
+VITE_API_URL=https://api.angolaxy.co.ao
+```
+
+## Estrutura do Projecto
 
 ```
 src/
-├── assets/          # Imagens, ícones, fontes
-├── components/      # Componentes reutilizáveis
-│   ├── common/      # Componentes genéricos (botões, cards, etc.)
-│   ├── layout/      # Componentes de layout (header, footer, etc.)
-│   └── sections/    # Seções específicas de páginas
-├── context/         # Contextos React para estado global
-├── hooks/           # Custom hooks
-├── pages/           # Componentes de página
-├── routes/          # Configuração de rotas
-├── services/        # Serviços (API, autenticação, etc.)
-├── styles/          # Estilos globais
-└── utils/           # Funções utilitárias
+├── components/
+│   ├── common/         # ProductCard, etc.
+│   └── layout/         # Header, Footer, Layout
+├── context/            # CartContext, AuthContext
+├── pages/              # Uma pasta por página
+├── routes/             # AppRoutes.tsx
+├── data.ts             # Dados e tipos (substituir por API)
+└── main.tsx
 ```
 
-## Instalação e Execução
+## Próximos Passos
 
-1. **Instalar dependências:**
-   ```bash
-   cd angolaxy
-   pnpm install
-   # ou
-   npm install
-   ```
-
-2. **Executar em modo de desenvolvimento:**
-   ```bash
-   pnpm dev
-   # ou
-   npm run dev
-   ```
-   O aplicativo estará disponível em `http://localhost:5173`
-
-3. **Compilar para produção:**
-   ```bash
-   pnpm build
-   # ou
-   npm run build
-   ```
-   Os arquivos compilados estarão na pasta `dist/`
-
-4. **Visualizar versão de produção localmente:**
-   ```bash
-   pnpm preview
-   # ou
-   npm run preview
-   ```
-
-## Funcionalidades Principais
-
-### Para Compradores
-- Navegação por categorias de produtos
-- Busca de produtos
-- Visualização detalhada de produtos
-- Carrinho de compras
-- Processo de checkout
-- Gerenciamento de perfil e pedidos
-- Lista de favoritos
-
-### Para Vendedores
-- Painel do vendedor
-- Gerenciamento de produtos
-- Acompanhamento de vendas e pedidos
-- Análise de desempenho
-
-## Personalização
-
-### Modificando o Tema
-- As cores principais podem ser ajustadas no arquivo `tailwind.config.js`
-- Estilos globais estão em `src/styles/`
-
-### Adicionando Novas Páginas
-1. Crie o componente da página em `src/pages/`
-2. Adicione a rota em `src/routes/AppRoutes.tsx`
-3. Atualize links de navegação conforme necessário
-
-### Integrando com Backend Real
-Atualmente, o projeto utiliza dados simulados. Para integrar com um backend real:
-
-1. Configure os endpoints da API em `src/services/api.ts`
-2. Substitua os dados simulados por chamadas de API nos componentes relevantes
-3. Implemente tratamento de erros e estados de carregamento
-
-## Implantação
-
-Para implantar o marketplace em um ambiente de produção:
-
-1. Execute `pnpm build` para gerar os arquivos estáticos
-2. Faça upload dos arquivos da pasta `dist/` para seu servidor web
-3. Configure seu servidor para redirecionar todas as requisições para `index.html` (necessário para roteamento SPA)
-
-## Suporte e Contribuição
-
-Para suporte ou contribuições ao projeto:
-
-1. Consulte a documentação detalhada em `DOCUMENTATION.md`
-2. Siga as convenções de código estabelecidas
-3. Teste todas as alterações antes de implantar
+- [ ] Integrar backend (Supabase / Firebase / API própria)
+- [ ] Autenticação real (JWT / OAuth)
+- [ ] Gateway de pagamento (Multicaixa Express API)
+- [ ] Pesquisa com Algolia ou ElasticSearch
+- [ ] Painel de administração
+- [ ] App mobile com React Native
 
 ---
 
-Desenvolvido com ❤️ para o mercado angolano
+Feito com ❤️ em Luanda 🇦🇴

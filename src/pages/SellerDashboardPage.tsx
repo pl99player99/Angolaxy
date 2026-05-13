@@ -1,256 +1,75 @@
-import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { ChartBarIcon, ShoppingBagIcon, CurrencyDollarIcon, StarIcon } from '@heroicons/react/24/outline'
 
 const SellerDashboardPage = () => {
-  const { user } = useAuth();
-  
-  // Dados simulados para o dashboard do vendedor
-  const stats = {
-    sales: 24,
-    revenue: 1250000,
-    products: 15,
-    views: 342
-  };
-  
-  // Dados simulados para produtos
-  const products = [
-    {
-      id: 1,
-      name: 'Smartphone XYZ Pro',
-      price: 120000,
-      stock: 8,
-      sales: 12,
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Notebook Ultra Slim',
-      price: 350000,
-      stock: 3,
-      sales: 5,
-      status: 'active'
-    },
-    {
-      id: 3,
-      name: 'Fones de Ouvido Bluetooth',
-      price: 25000,
-      stock: 0,
-      sales: 7,
-      status: 'out_of_stock'
-    }
-  ];
-  
-  // Dados simulados para pedidos recentes
-  const orders = [
-    {
-      id: 'ORD-12345',
-      date: '15/05/2025',
-      customer: 'João Silva',
-      total: 120000,
-      status: 'delivered'
-    },
-    {
-      id: 'ORD-12346',
-      date: '28/04/2025',
-      customer: 'Maria Santos',
-      total: 350000,
-      status: 'processing'
-    },
-    {
-      id: 'ORD-12347',
-      date: '10/04/2025',
-      customer: 'Pedro Alves',
-      total: 25000,
-      status: 'shipped'
-    }
-  ];
+  const { user } = useAuth()
 
-  // Verificar se o usuário está autenticado e é um vendedor
-  if (!user || user.accountType !== 'seller') {
+  if (!user) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            {!user ? 'Você precisa estar logado para acessar o painel de vendedor' : 'Você não tem permissão para acessar esta página'}
-          </h2>
-          <Link
-            to={!user ? "/login" : "/"}
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            {!user ? 'Fazer Login' : 'Voltar para a página inicial'}
-          </Link>
-        </div>
+      <div className="container-custom py-20 text-center">
+        <h2 className="text-xl font-bold mb-4">Precisa de entrar na sua conta</h2>
+        <Link to="/login" className="btn-primary">Entrar</Link>
       </div>
-    );
+    )
   }
 
+  const stats = [
+    { icon: ShoppingBagIcon,    label: 'Produtos Activos',   value: '0',        color: 'text-blue-600',   bg: 'bg-blue-50' },
+    { icon: ChartBarIcon,       label: 'Vendas este Mês',    value: '0',        color: 'text-green-600',  bg: 'bg-green-50' },
+    { icon: CurrencyDollarIcon, label: 'Receita Total',      value: '0 Kz',     color: 'text-purple-600', bg: 'bg-purple-50' },
+    { icon: StarIcon,           label: 'Avaliação Média',    value: '—',        color: 'text-amber-600',  bg: 'bg-amber-50' },
+  ]
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Painel do Vendedor</h1>
-
-      {/* Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="font-medium text-gray-500 mb-2">Vendas</h3>
-          <p className="text-3xl font-bold">{stats.sales}</p>
+    <div className="container-custom py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-black">Dashboard do Vendedor</h1>
+          <p className="text-gray-500 text-sm mt-0.5">Bem-vindo, {user.name.split(' ')[0]} 👋</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="font-medium text-gray-500 mb-2">Receita</h3>
-          <p className="text-3xl font-bold">
-            {(stats.revenue / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="font-medium text-gray-500 mb-2">Produtos</h3>
-          <p className="text-3xl font-bold">{stats.products}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="font-medium text-gray-500 mb-2">Visualizações</h3>
-          <p className="text-3xl font-bold">{stats.views}</p>
-        </div>
+        <button className="btn-primary">+ Adicionar Produto</button>
       </div>
 
-      {/* Produtos */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
-        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Meus Produtos</h2>
-          <Link to="/vender/produtos/novo" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-            Adicionar Produto
-          </Link>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Produto
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Preço
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estoque
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vendas
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{product.name}</div>
-                    <div className="text-sm text-gray-500">ID: {product.id}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {(product.price / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {product.stock}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {product.sales}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${product.status === 'active' ? 'bg-green-100 text-green-800' : 
-                        product.status === 'out_of_stock' ? 'bg-red-100 text-red-800' : 
-                        'bg-yellow-100 text-yellow-800'}`}>
-                      {product.status === 'active' ? 'Ativo' : 
-                       product.status === 'out_of_stock' ? 'Sem estoque' : 'Rascunho'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Link to={`/vender/produtos/${product.id}`} className="text-blue-600 hover:text-blue-800 mr-3">
-                      Editar
-                    </Link>
-                    <button className="text-red-600 hover:text-red-800">
-                      Excluir
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {stats.map(({ icon: Icon, label, value, color, bg }) => (
+          <div key={label} className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className={`w-10 h-10 ${bg} rounded-xl flex items-center justify-center mb-3`}>
+              <Icon className={`h-5 w-5 ${color}`} />
+            </div>
+            <p className="text-2xl font-black text-gray-900">{value}</p>
+            <p className="text-sm text-gray-500 mt-0.5">{label}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Pedidos recentes */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Pedidos Recentes</h2>
-          <Link to="/vender/pedidos" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-            Ver todos
-          </Link>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Pedido
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Data
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cliente
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{order.id}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.date}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.customer}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {(order.total / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
-                        order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' : 
-                        'bg-blue-100 text-blue-800'}`}>
-                      {order.status === 'delivered' ? 'Entregue' : 
-                       order.status === 'processing' ? 'Em processamento' : 'Enviado'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <Link to={`/vender/pedidos/${order.id}`} className="text-blue-600 hover:text-blue-800">
-                      Detalhes
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Empty state */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+        <div className="text-5xl mb-4">🏪</div>
+        <h2 className="text-xl font-bold text-gray-700 mb-2">A sua loja está pronta!</h2>
+        <p className="text-gray-400 mb-6 max-w-md mx-auto">
+          Comece a adicionar os seus produtos e alcance milhares de clientes em todo o Angola.
+        </p>
+        <button className="btn-primary">Adicionar o Primeiro Produto</button>
+      </div>
+
+      {/* Tips */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          { emoji: '📸', title: 'Boas fotos vendem mais', desc: 'Use imagens de alta qualidade com fundo neutro e boa iluminação.' },
+          { emoji: '💰', title: 'Preço competitivo', desc: 'Pesquise os preços da concorrência e posicione-se de forma competitiva.' },
+          { emoji: '⚡', title: 'Resposta rápida', desc: 'Vendedores que respondem em menos de 1h têm 3x mais conversões.' },
+        ].map(({ emoji, title, desc }) => (
+          <div key={title} className="bg-blue-50 rounded-2xl p-5">
+            <p className="text-2xl mb-2">{emoji}</p>
+            <h3 className="font-bold text-gray-800 mb-1">{title}</h3>
+            <p className="text-sm text-gray-600">{desc}</p>
+          </div>
+        ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SellerDashboardPage;
+export default SellerDashboardPage

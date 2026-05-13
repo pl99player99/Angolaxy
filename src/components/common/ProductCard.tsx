@@ -1,102 +1,100 @@
-/**
- * Componente ProductCard - Card reutilizável para exibição de produtos
- * 
- * Este componente é usado em várias páginas para exibir produtos de forma consistente,
- * incluindo imagem, nome, preço, avaliações e botão de adicionar ao carrinho.
- */
+import { Link } from 'react-router-dom'
+import { HeartIcon, ShoppingCartIcon, StarIcon } from '@heroicons/react/24/outline'
+import { StarIcon as StarSolid } from '@heroicons/react/24/solid'
+import { Product, formatKz, discountedPrice } from '../../data'
+import { useCart } from '../../context/CartContext'
 
-import { Link } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
-
-interface ProductCardProps {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    rating: number;
-    reviews: number;
-    discount?: number;
-  };
+interface Props {
+  product: Product
+  compact?: boolean
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  const { addItem } = useCart();
+const Stars = ({ rating }: { rating: number }) => (
+  <div className="flex items-center gap-0.5">
+    {[1,2,3,4,5].map(i => (
+      i <= Math.round(rating)
+        ? <StarSolid key={i} className="h-3.5 w-3.5 text-amber-400" />
+        : <StarIcon key={i} className="h-3.5 w-3.5 text-gray-300" />
+    ))}
+  </div>
+)
 
-  // Calcular preço com desconto se aplicável
-  const discountedPrice = product.discount 
-    ? product.price - (product.price * product.discount / 100) 
-    : product.price;
+const ProductCard = ({ product, compact = false }: Props) => {
+  const { addItem } = useCart()
+  const finalPrice = discountedPrice(product.price, product.discount)
 
-  // Função para adicionar o produto ao carrinho
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Evita navegação para a página do produto
-    e.stopPropagation(); // Evita propagação do evento
-    
+    e.preventDefault()
     addItem({
       id: product.id,
       name: product.name,
       price: product.price,
       image: product.image,
-      quantity: 1
-    });
-  };
+      discount: product.discount,
+    })
+  }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <Link to={`/produto/${product.id}`}>
-        <div className="h-48 bg-gray-200 relative">
-          {product.discount && product.discount > 0 && (
-            <div className="absolute top-0 right-0 bg-blue-600 text-white px-3 py-1 m-2 rounded-lg">
-              -{product.discount}%
-            </div>
+    <div className="card group overflow-hidden flex flex-col">
+      <Link to={`/produto/${product.id}`} className="block relative overflow-hidden">
+        <div className={`bg-gray-100 overflow-hidden ${compact ? 'h-44' : 'h-56'}`}>
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        </div>
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {product.discount > 0 && (
+            <span className="badge badge-red">-{product.discount}%</span>
           )}
-          {/* Placeholder para imagem do produto */}
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
-            Imagem do Produto
-          </div>
+          {product.stock <= 5 && product.stock > 0 && (
+            <span className="badge badge-yellow">Últimas unidades</span>
+          )}
         </div>
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">{product.name}</h3>
-          <div className="flex items-center mb-2">
-            <div className="flex text-yellow-400">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className={i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}>★</span>
-              ))}
-            </div>
-            <span className="text-gray-600 text-sm ml-2">({product.reviews})</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              {product.discount && product.discount > 0 ? (
-                <>
-                  <span className="text-gray-500 line-through text-sm mr-2">
-                    {(product.price / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                  </span>
-                  <span className="font-bold text-blue-600">
-                    {(discountedPrice / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                  </span>
-                </>
-              ) : (
-                <span className="font-bold text-gray-800">
-                  {(product.price / 100).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}
-                </span>
-              )}
-            </div>
-            <button 
-              onClick={handleAddToCart}
-              className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
-              aria-label="Adicionar ao carrinho"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        {/* Wishlist */}
+        <button
+          className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-500"
+          aria-label="Adicionar aos favoritos"
+          onClick={e => { e.preventDefault(); }}
+        >
+          <HeartIcon className="h-4 w-4" />
+        </button>
       </Link>
-    </div>
-  );
-};
 
-export default ProductCard;
+      <div className="p-3 flex flex-col flex-1">
+        <Link to={`/produto/${product.id}`}>
+          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1 hover:text-blue-600 transition-colors">
+            {product.name}
+          </h3>
+        </Link>
+
+        <div className="flex items-center gap-1.5 mb-2">
+          <Stars rating={product.rating} />
+          <span className="text-xs text-gray-400">({product.reviews})</span>
+        </div>
+
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-2 mb-2">
+            <span className="text-base font-black text-gray-900">{formatKz(finalPrice)}</span>
+            {product.discount > 0 && product.originalPrice && (
+              <span className="text-xs text-gray-400 line-through">{formatKz(product.originalPrice)}</span>
+            )}
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            className="w-full flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 rounded-xl transition-colors"
+          >
+            <ShoppingCartIcon className="h-4 w-4" />
+            Adicionar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ProductCard
